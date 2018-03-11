@@ -80,8 +80,6 @@ terrorists_attack$decade <- factor(terrorists_attack$decade,
                                    levels = c("1970s", "1980s", "1990s",
                                               "2000s", "2010s"))
 
-colourCount = length(unique(terrorists_attack$targtype1))
-getPalette = colorRampPalette(brewer.pal(9, "Set1"))
 
 ```
 
@@ -203,3 +201,27 @@ ggplot(., aes(x = reorder(gname, value), y = value, fill = type)) +
   theme_bw() +
   theme(legend.position = "top")
 ```
+<br>
+
+#### Locations of attacks
+```{r eval = TRUE, echo = FALSE}
+attacks_locations <- terrorists_attack %>% 
+  filter(!is.na(terrorists_attack$longitude), eventid != 199112310005)
+leaflet(attacks_locations) %>% 
+  addTiles() %>% 
+  addCircleMarkers(lat = attacks_locations$latitude, 
+             lng = attacks_locations$longitude,
+             radius = 10, color = "red",
+             stroke = FALSE, fillOpacity = 0.5,
+             clusterOptions = markerClusterOptions(),
+             popup = paste("<strong>Date: </strong>", attacks_locations$iday,"/",attacks_locations$imonth,"/", attacks_locations$iyear,
+                          "<br><br><strong>Main weapon: </strong>", ifelse(!is.na(attacks_locations$weaptype1_txt), attacks_locations$weaptype1_txt, "NA"),
+                          "<br><strong>Killed: </strong>", attacks_locations$nkill,
+                          "<br><strong>Wounded: </strong>", attacks_locations$nwound,
+                          "<br><strong>Summay: </strong>", ifelse(!is.na(attacks_locations$summary), attacks_locations$summary, "NA")
+                          
+             ))
+```
+
+_Please note that 9 locations had been removed due to missing
+longitude/latitude or wrong data._

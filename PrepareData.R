@@ -70,11 +70,6 @@ terrorists_attack$decade <- factor(terrorists_attack$decade,
 # Change value of day if 0 to 1
 terrorists_attack$iday[terrorists_attack$iday == 0] <- 1
 
-# Add date column
-terrorists_attack <- terrorists_attack %>% mutate(date = paste(iday, imonth,
-                                                   iyear, sep = "/"))
-terrorists_attack$date <- dmy(terrorists_attack$date)
-
 # Fix city names
 terrorists_attack$city <- terrorists_attack$city %>% 
   recode("Wadiyan" = "Wadyan",
@@ -193,3 +188,21 @@ ggplot(., aes(x = reorder(gname, value), y = value, fill = type)) +
   scale_y_continuous(breaks = seq(0, 120, by = 15)) +
   coord_flip() +
   theme_bw()
+
+# Attacks locations
+attacks_locations <- terrorists_attack %>% 
+  filter(!is.na(terrorists_attack$longitude), eventid != 199112310005)
+leaflet(attacks_locations) %>% 
+  addTiles() %>% 
+  addCircleMarkers(lat = ~latitude, 
+             lng = ~longitude,
+             radius = 10, color = "red",
+             stroke = FALSE, fillOpacity = 0.5,
+             clusterOptions = markerClusterOptions(),
+             popup = paste("<strong>Date: </strong>", ~iday,"/",~imonth,"/", ~iyear,
+                          "<br><br><strong>Main weapon: </strong>", ifelse(!is.na(~weaptype1_txt), ~weaptype1_txt, "NA"),
+                          "<br><strong>Killed: </strong>", ~nkill,
+                          "<br><strong>Wounded: </strong>", ~nwound,
+                          "<br><strong>Summay: </strong>", ifelse(!is.na(~summary), ~summary, "NA")
+                          
+             ))
