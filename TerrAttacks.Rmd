@@ -208,11 +208,9 @@ ggplot(., aes(x = reorder(gname, value), y = value, fill = type)) +
 attacks_locations <- terrorists_attack %>% 
   filter(!is.na(terrorists_attack$longitude), eventid != 199112310005)
 leaflet(attacks_locations) %>% 
-  addTiles() %>% 
-  addCircleMarkers(lat = attacks_locations$latitude, 
+  addTiles(urlTemplate = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png") %>% 
+  addMarkers(lat = attacks_locations$latitude, 
              lng = attacks_locations$longitude,
-             radius = 10, color = "red",
-             stroke = FALSE, fillOpacity = 0.5,
              clusterOptions = markerClusterOptions(),
              popup = paste("<strong>Date: </strong>", attacks_locations$iday,"/",attacks_locations$imonth,"/", attacks_locations$iyear,
                           "<br><br><strong>Main weapon: </strong>", ifelse(!is.na(attacks_locations$weaptype1_txt), attacks_locations$weaptype1_txt, "NA"),
