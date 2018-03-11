@@ -14,7 +14,7 @@ terrorists_attack <- read_csv('terrorism_attack')
 # sapply(terrorists_attack, function(x) {
 #   length(which(is.na(x)))
 # })
-
+print("hello")
 # Temove unuseful columns
 terrorists_attack <-
   terrorists_attack %>% select(
