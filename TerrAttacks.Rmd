@@ -94,7 +94,7 @@ Time period: 1970-2016
 
 #### Preview of data
 ```{r eval = TRUE, echo = FALSE, results = 'asis'}
-kable(terrorists_attack[1:10, c("provstate", "city", "targtype1_txt", "target1", "nkill", "nwound")], col.names = c("Governate", "City","Target type","Target","Killed","Wounded"), "html") %>% 
+kable(terrorists_attack[1:10, c("provstate", "city", "attacktype1_txt", "target1", "nkill", "nwound")], col.names = c("Governate", "City","Attack type","Target","Killed","Wounded"), "html") %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 ```
 
