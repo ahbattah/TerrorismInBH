@@ -220,6 +220,7 @@ leaflet(attacks_locations) %>%
                           
              ))
 ```
+<br>
 
 _Please note that 9 locations had been removed due to missing
 longitude/latitude or wrong data._
