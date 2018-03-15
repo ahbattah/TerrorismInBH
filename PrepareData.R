@@ -174,35 +174,17 @@ ggplot(., aes(x = reorder(gname, total), y = total, fill = gname)) +
   theme(legend.position = "none")
 
 # Number of killed/Wounded by group attack name
-terrorists_attack %>% 
-  filter(nkill > 0 | nwound > 0) %>% 
-  group_by(gname) %>% 
-  summarise(killed = sum(nkill), wounded = sum(nwound)) %>% 
-  gather(type, value, -gname) %>% 
-ggplot(., aes(x = reorder(gname, value), y = value, fill = type)) +
-  geom_col(position = "dodge") +
-  labs(title = "", x = "", y = "", fill = "") +
-  #facet_wrap(~ type) +
-  geom_text(aes(label = value), 
-             position = position_dodge(width = 1), hjust = -0.1, vjust = 0.3) +
-  scale_y_continuous(breaks = seq(0, 120, by = 15)) +
-  coord_flip() +
-  theme_bw()
-
-# Attacks locations
 attacks_locations <- terrorists_attack %>% 
   filter(!is.na(terrorists_attack$longitude), eventid != 199112310005)
 leaflet(attacks_locations) %>% 
-  addTiles() %>% 
-  addCircleMarkers(lat = ~latitude, 
-             lng = ~longitude,
-             radius = 10, color = "red",
-             stroke = FALSE, fillOpacity = 0.5,
+  addTiles(urlTemplate = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png") %>% 
+  addMarkers(lat = attacks_locations$latitude, 
+             lng = attacks_locations$longitude,
              clusterOptions = markerClusterOptions(),
-             popup = paste("<strong>Date: </strong>", ~iday,"/",~imonth,"/", ~iyear,
-                          "<br><br><strong>Main weapon: </strong>", ifelse(!is.na(~weaptype1_txt), ~weaptype1_txt, "NA"),
-                          "<br><strong>Killed: </strong>", ~nkill,
-                          "<br><strong>Wounded: </strong>", ~nwound,
-                          "<br><strong>Summay: </strong>", ifelse(!is.na(~summary), ~summary, "NA")
-                          
+             popup = paste("<strong>Date: </strong>", attacks_locations$iday,"/",attacks_locations$imonth,"/", attacks_locations$iyear,
+                           "<br><br><strong>Main weapon: </strong>", ifelse(!is.na(attacks_locations$weaptype1_txt), attacks_locations$weaptype1_txt, "NA"),
+                           "<br><strong>Killed: </strong>", attacks_locations$nkill,
+                           "<br><strong>Wounded: </strong>", attacks_locations$nwound,
+                           "<br><strong>Summay: </strong>", ifelse(!is.na(attacks_locations$summary), attacks_locations$summary, "NA")
+                           
              ))
